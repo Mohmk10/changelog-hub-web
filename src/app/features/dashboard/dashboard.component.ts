@@ -1,8 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { LucideAngularModule, GitCompare, AlertTriangle, TrendingUp, Shield, ArrowRight, Clock } from 'lucide-angular';
 import { ChangelogService } from '../../core/services/changelog.service';
+import { AuthService } from '../../core/services/auth.service';
+import { ComparisonResult } from '../../core/models/breaking-change.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -28,7 +30,7 @@ import { ChangelogService } from '../../core/services/changelog.service';
           <div class="flex items-center justify-between">
             <div>
               <p class="text-slate-500 dark:text-dark-400 text-sm font-medium">Total Comparisons</p>
-              <p class="text-3xl font-bold text-slate-900 dark:text-white mt-1">{{ stats.totalComparisons }}</p>
+              <p class="text-3xl font-bold text-slate-900 dark:text-white mt-1">{{ stats().totalComparisons }}</p>
               <p class="text-xs text-emerald-600 dark:text-emerald-400 mt-2 flex items-center gap-1">
                 <span>&#8593; 12%</span>
                 <span class="text-slate-400 dark:text-dark-500">vs last week</span>
@@ -44,7 +46,7 @@ import { ChangelogService } from '../../core/services/changelog.service';
           <div class="flex items-center justify-between">
             <div>
               <p class="text-slate-500 dark:text-dark-400 text-sm font-medium">Breaking Changes</p>
-              <p class="text-3xl font-bold text-red-600 dark:text-red-400 mt-1">{{ stats.breakingChanges }}</p>
+              <p class="text-3xl font-bold text-red-600 dark:text-red-400 mt-1">{{ stats().breakingChanges }}</p>
               <p class="text-xs text-red-600 dark:text-red-400 mt-2 flex items-center gap-1">
                 <span>&#8593; 5</span>
                 <span class="text-slate-400 dark:text-dark-500">new this week</span>
@@ -60,7 +62,7 @@ import { ChangelogService } from '../../core/services/changelog.service';
           <div class="flex items-center justify-between">
             <div>
               <p class="text-slate-500 dark:text-dark-400 text-sm font-medium">Average Risk Score</p>
-              <p class="text-3xl font-bold text-amber-600 dark:text-yellow-400 mt-1">{{ stats.avgRiskScore }}</p>
+              <p class="text-3xl font-bold text-amber-600 dark:text-yellow-400 mt-1">{{ stats().avgRiskScore }}</p>
               <p class="text-xs text-emerald-600 dark:text-emerald-400 mt-2 flex items-center gap-1">
                 <span>&#8595; 8</span>
                 <span class="text-slate-400 dark:text-dark-500">improved</span>
@@ -76,7 +78,7 @@ import { ChangelogService } from '../../core/services/changelog.service';
           <div class="flex items-center justify-between">
             <div>
               <p class="text-slate-500 dark:text-dark-400 text-sm font-medium">Stability Grade</p>
-              <p class="text-3xl font-bold text-emerald-600 dark:text-green-400 mt-1">{{ stats.stabilityGrade }}</p>
+              <p class="text-3xl font-bold text-emerald-600 dark:text-green-400 mt-1">{{ stats().stabilityGrade }}</p>
               <p class="text-xs text-slate-400 dark:text-dark-500 mt-2">
                 Above average
               </p>
@@ -128,7 +130,7 @@ import { ChangelogService } from '../../core/services/changelog.service';
           </a>
         </div>
 
-        @if (recentComparisons.length === 0) {
+        @if (recentComparisons().length === 0) {
           <div class="text-center py-12 bg-slate-50 dark:bg-dark-700/50 rounded-xl border-2 border-dashed border-slate-200 dark:border-dark-600">
             <div class="w-16 h-16 bg-slate-100 dark:bg-dark-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <lucide-icon [img]="ClockIcon" class="w-8 h-8 text-slate-400 dark:text-dark-400"></lucide-icon>
@@ -142,7 +144,7 @@ import { ChangelogService } from '../../core/services/changelog.service';
           </div>
         } @else {
           <div class="space-y-3">
-            @for (comparison of recentComparisons; track comparison.id) {
+            @for (comparison of recentComparisons(); track comparison.id) {
               <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-dark-700 rounded-xl hover:bg-slate-100 dark:hover:bg-dark-600 transition-colors cursor-pointer">
                 <div class="flex items-center gap-4">
                   <div class="w-10 h-10 bg-primary-100 dark:bg-primary-500/20 rounded-lg flex items-center justify-center">
@@ -169,6 +171,7 @@ import { ChangelogService } from '../../core/services/changelog.service';
 })
 export class DashboardComponent {
   private changelogService = inject(ChangelogService);
+  private authService = inject(AuthService);
 
   GitCompareIcon = GitCompare;
   AlertTriangleIcon = AlertTriangle;
@@ -177,14 +180,43 @@ export class DashboardComponent {
   ArrowRightIcon = ArrowRight;
   ClockIcon = Clock;
 
-  stats = {
-    totalComparisons: 12,
-    breakingChanges: 23,
-    avgRiskScore: 65,
-    stabilityGrade: 'B'
-  };
+  stats = computed(() => {
+    if (this.authService.isAuthenticated()) {
+      const comparisons = this.changelogService.comparisons();
+      const totalBreaking = comparisons.reduce((sum, c) => sum + c.summary.breakingChanges, 0);
+      const avgRisk = comparisons.length > 0
+        ? Math.round(comparisons.reduce((sum, c) => sum + c.summary.riskScore, 0) / comparisons.length)
+        : 0;
+      return {
+        totalComparisons: comparisons.length,
+        breakingChanges: totalBreaking,
+        avgRiskScore: avgRisk,
+        stabilityGrade: this.calculateOverallGrade(comparisons)
+      };
+    }
+    // Mock data pour visiteurs
+    return {
+      totalComparisons: 12,
+      breakingChanges: 23,
+      avgRiskScore: 65,
+      stabilityGrade: 'B'
+    };
+  });
 
-  get recentComparisons() {
-    return this.changelogService.getRecentComparisons().slice(0, 5);
+  recentComparisons = computed(() => {
+    if (this.authService.isAuthenticated()) {
+      return this.changelogService.comparisons().slice(0, 5);
+    }
+    return this.changelogService.getMockComparisons();
+  });
+
+  private calculateOverallGrade(comparisons: ComparisonResult[]): string {
+    if (comparisons.length === 0) return 'A';
+    const avgScore = comparisons.reduce((sum, c) => sum + c.summary.riskScore, 0) / comparisons.length;
+    if (avgScore <= 20) return 'A';
+    if (avgScore <= 40) return 'B';
+    if (avgScore <= 60) return 'C';
+    if (avgScore <= 80) return 'D';
+    return 'F';
   }
 }

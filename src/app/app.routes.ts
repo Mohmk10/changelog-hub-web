@@ -22,5 +22,9 @@ export const routes: Routes = [
     path: 'settings',
     loadComponent: () => import('./features/settings/settings.component').then(m => m.SettingsComponent)
   },
+  {
+    path: 'auth/callback',
+    loadComponent: () => import('./features/auth/auth-callback.component').then(m => m.AuthCallbackComponent)
+  },
   { path: '**', redirectTo: '/dashboard' }
 ];
