@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { LucideAngularModule, Search, Filter, Download, Calendar, ChevronDown, FileJson } from 'lucide-angular';
 import { ChangelogService } from '../../core/services/changelog.service';
 import { SeverityBadgeComponent } from '../../shared/components/severity-badge/severity-badge.component';
+import { ComparisonResult, BreakingChange } from '../../core/models/breaking-change.model';
 
 @Component({
   selector: 'app-changelog',
@@ -173,45 +174,45 @@ export class ChangelogComponent {
   selectedSeverity = 'all';
   dateRange = 'all';
 
-  comparisons = this.changelogService.comparisons$;
+  comparisons = this.changelogService.comparisons;
 
   filteredComparisons = computed(() => {
-    let results = this.comparisons();
+    let results: ComparisonResult[] = this.comparisons();
 
     if (this.selectedSeverity !== 'all') {
-      results = results.map(c => ({
+      results = results.map((c: ComparisonResult) => ({
         ...c,
-        changes: c.changes.filter(change => change.severity === this.selectedSeverity)
-      })).filter(c => c.changes.length > 0);
+        changes: c.changes.filter((change: BreakingChange) => change.severity === this.selectedSeverity)
+      })).filter((c: ComparisonResult) => c.changes.length > 0);
     }
 
     if (this.searchQuery) {
       const query = this.searchQuery.toLowerCase();
-      results = results.map(c => ({
+      results = results.map((c: ComparisonResult) => ({
         ...c,
-        changes: c.changes.filter(change =>
+        changes: c.changes.filter((change: BreakingChange) =>
           change.description.toLowerCase().includes(query) ||
           change.path.toLowerCase().includes(query)
         )
-      })).filter(c => c.changes.length > 0);
+      })).filter((c: ComparisonResult) => c.changes.length > 0);
     }
 
     return results;
   });
 
   breakingCount = computed(() =>
-    this.comparisons().reduce((sum, c) => sum + c.summary.breakingChanges, 0)
+    this.comparisons().reduce((sum: number, c: ComparisonResult) => sum + c.summary.breakingChanges, 0)
   );
 
   dangerousCount = computed(() =>
-    this.comparisons().reduce((sum, c) => sum + c.summary.dangerousChanges, 0)
+    this.comparisons().reduce((sum: number, c: ComparisonResult) => sum + c.summary.dangerousChanges, 0)
   );
 
   warningCount = computed(() =>
-    this.comparisons().reduce((sum, c) => sum + c.summary.warningChanges, 0)
+    this.comparisons().reduce((sum: number, c: ComparisonResult) => sum + c.summary.warningChanges, 0)
   );
 
   infoCount = computed(() =>
-    this.comparisons().reduce((sum, c) => sum + c.summary.infoChanges, 0)
+    this.comparisons().reduce((sum: number, c: ComparisonResult) => sum + c.summary.infoChanges, 0)
   );
 }

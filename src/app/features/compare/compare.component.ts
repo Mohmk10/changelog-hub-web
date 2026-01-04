@@ -172,10 +172,14 @@ export class CompareComponent {
 
   oldSpec = signal<ApiSpec | null>(null);
   newSpec = signal<ApiSpec | null>(null);
+  oldFile = signal<File | null>(null);
+  newFile = signal<File | null>(null);
   result = signal<ComparisonResult | null>(null);
+  loading = signal<boolean>(false);
+  error = signal<string | null>(null);
 
   canCompare(): boolean {
-    return this.oldSpec() !== null && this.newSpec() !== null;
+    return this.oldFile() !== null && this.newFile() !== null && !this.loading();
   }
 
   onDragOver(event: DragEvent): void {
@@ -199,22 +203,20 @@ export class CompareComponent {
   }
 
   private processFile(file: File, type: 'old' | 'new'): void {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const spec: ApiSpec = {
-        name: file.name,
-        version: '1.0.0',
-        format: this.detectFormat(file.name),
-        content: reader.result as string
-      };
-
-      if (type === 'old') {
-        this.oldSpec.set(spec);
-      } else {
-        this.newSpec.set(spec);
-      }
+    const spec: ApiSpec = {
+      name: file.name,
+      version: '1.0.0',
+      format: this.detectFormat(file.name),
+      content: ''
     };
-    reader.readAsText(file);
+
+    if (type === 'old') {
+      this.oldSpec.set(spec);
+      this.oldFile.set(file);
+    } else {
+      this.newSpec.set(spec);
+      this.newFile.set(file);
+    }
   }
 
   private detectFormat(filename: string): ApiSpec['format'] {
@@ -223,10 +225,19 @@ export class CompareComponent {
     return 'OPENAPI';
   }
 
-  compare(): void {
-    if (this.oldSpec() && this.newSpec()) {
-      const comparisonResult = this.changelogService.compareSpecs(this.oldSpec()!, this.newSpec()!);
-      this.result.set(comparisonResult);
+  async compare(): Promise<void> {
+    if (this.oldFile() && this.newFile()) {
+      this.loading.set(true);
+      this.error.set(null);
+      try {
+        const comparisonResult = await this.changelogService.compareSpecs(this.oldFile()!, this.newFile()!);
+        this.result.set(comparisonResult);
+      } catch (err) {
+        this.error.set('Failed to compare specifications. Please try again.');
+        console.error('Comparison error:', err);
+      } finally {
+        this.loading.set(false);
+      }
     }
   }
 }
