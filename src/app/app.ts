@@ -2,12 +2,13 @@ import { Component, signal, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SidebarComponent } from './shared/components/sidebar/sidebar.component';
 import { MobileNavComponent } from './shared/components/mobile-nav/mobile-nav.component';
+import { InstallPromptComponent } from './shared/components/install-prompt/install-prompt.component';
 import { ThemeService } from './core/services/theme.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, SidebarComponent, MobileNavComponent],
+  imports: [RouterOutlet, SidebarComponent, MobileNavComponent, InstallPromptComponent],
   template: `
     <!-- Desktop Sidebar (hidden on mobile) -->
     <app-sidebar class="hidden lg:block" />
@@ -35,6 +36,9 @@ import { ThemeService } from './core/services/theme.service';
         (click)="toggleMobileMenu()"
       ></div>
     }
+
+    <!-- PWA Install Prompt -->
+    <app-install-prompt />
   `
 })
 export class App {
