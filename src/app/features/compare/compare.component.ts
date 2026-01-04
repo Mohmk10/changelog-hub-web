@@ -91,23 +91,23 @@ import { SeverityBadgeComponent } from '../../shared/components/severity-badge/s
       <!-- Results -->
       @if (result()) {
         <div class="card">
-          <div class="flex items-center justify-between mb-6">
-            <h2 class="text-xl font-bold text-gray-900 dark:text-white">Comparison Results</h2>
-            <div class="flex items-center gap-4">
-              <span class="px-3 py-1 bg-gray-100 dark:bg-dark-700 rounded-lg text-gray-700 dark:text-dark-200">
-                Risk Score: <span class="text-yellow-500 dark:text-yellow-400 font-bold">{{ result()!.summary.riskScore }}</span>
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
+            <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Comparison Results</h2>
+            <div class="flex flex-wrap items-center gap-2 sm:gap-4">
+              <span class="px-2 sm:px-3 py-1 bg-gray-100 dark:bg-dark-700 rounded-lg text-gray-700 dark:text-dark-200 text-xs sm:text-sm">
+                Risk: <span class="text-yellow-500 dark:text-yellow-400 font-bold">{{ result()!.summary.riskScore }}</span>
               </span>
-              <span class="px-3 py-1 bg-gray-100 dark:bg-dark-700 rounded-lg text-gray-700 dark:text-dark-200">
+              <span class="px-2 sm:px-3 py-1 bg-gray-100 dark:bg-dark-700 rounded-lg text-gray-700 dark:text-dark-200 text-xs sm:text-sm">
                 Grade: <span class="text-primary-600 dark:text-primary-400 font-bold">{{ result()!.summary.stabilityGrade }}</span>
               </span>
-              <span class="px-3 py-1 bg-red-500/20 text-red-500 dark:text-red-400 rounded-lg">
-                Recommended: {{ result()!.summary.semverRecommendation }}
+              <span class="px-2 sm:px-3 py-1 bg-red-500/20 text-red-500 dark:text-red-400 rounded-lg text-xs sm:text-sm">
+                {{ result()!.summary.semverRecommendation }}
               </span>
             </div>
           </div>
 
           <!-- Summary Stats -->
-          <div class="grid grid-cols-4 gap-4 mb-6">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
             <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4 text-center">
               <p class="text-3xl font-bold text-red-500 dark:text-red-400">{{ result()!.summary.breakingChanges }}</p>
               <p class="text-gray-500 dark:text-dark-400 text-sm">Breaking</p>
