@@ -13,12 +13,12 @@ import { ComparisonResult } from '../../core/models/breaking-change.model';
   template: `
     <div class="space-y-6">
       <!-- Header -->
-      <div class="flex items-center justify-between">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Dashboard</h1>
-          <p class="text-slate-500 dark:text-dark-400 mt-1">Overview of your API changes</p>
+          <h1 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">Dashboard</h1>
+          <p class="text-slate-500 dark:text-dark-400 mt-1 text-sm sm:text-base">Overview of your API changes</p>
         </div>
-        <a routerLink="/compare" class="btn-primary flex items-center gap-2">
+        <a routerLink="/compare" class="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto">
           <lucide-icon [img]="GitCompareIcon" class="w-4 h-4"></lucide-icon>
           New Comparison
         </a>
@@ -145,19 +145,19 @@ import { ComparisonResult } from '../../core/models/breaking-change.model';
         } @else {
           <div class="space-y-3">
             @for (comparison of recentComparisons(); track comparison.id) {
-              <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-dark-700 rounded-xl hover:bg-slate-100 dark:hover:bg-dark-600 transition-colors cursor-pointer">
-                <div class="flex items-center gap-4">
-                  <div class="w-10 h-10 bg-primary-100 dark:bg-primary-500/20 rounded-lg flex items-center justify-center">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-slate-50 dark:bg-dark-700 rounded-xl hover:bg-slate-100 dark:hover:bg-dark-600 transition-colors cursor-pointer">
+                <div class="flex items-center gap-3 sm:gap-4">
+                  <div class="w-10 h-10 bg-primary-100 dark:bg-primary-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
                     <lucide-icon [img]="GitCompareIcon" class="w-5 h-5 text-primary-600 dark:text-primary-400"></lucide-icon>
                   </div>
-                  <div>
-                    <p class="text-slate-900 dark:text-white font-medium">{{ comparison.oldSpec.name }} &rarr; {{ comparison.newSpec.name }}</p>
-                    <p class="text-slate-500 dark:text-dark-400 text-sm">{{ comparison.timestamp | date:'medium' }}</p>
+                  <div class="min-w-0">
+                    <p class="text-slate-900 dark:text-white font-medium text-sm sm:text-base truncate">{{ comparison.oldSpec.name }} &rarr; {{ comparison.newSpec.name }}</p>
+                    <p class="text-slate-500 dark:text-dark-400 text-xs sm:text-sm">{{ comparison.timestamp | date:'medium' }}</p>
                   </div>
                 </div>
-                <div class="flex items-center gap-3">
-                  <span class="badge-breaking">{{ comparison.summary.breakingChanges }} breaking</span>
-                  <span class="px-3 py-1.5 bg-slate-200 dark:bg-dark-600 rounded-lg text-sm font-medium text-slate-700 dark:text-dark-200">
+                <div class="flex items-center gap-2 sm:gap-3 ml-13 sm:ml-0">
+                  <span class="badge-breaking text-xs sm:text-sm">{{ comparison.summary.breakingChanges }} breaking</span>
+                  <span class="px-2 sm:px-3 py-1 sm:py-1.5 bg-slate-200 dark:bg-dark-600 rounded-lg text-xs sm:text-sm font-medium text-slate-700 dark:text-dark-200">
                     Score: {{ comparison.summary.riskScore }}
                   </span>
                 </div>
