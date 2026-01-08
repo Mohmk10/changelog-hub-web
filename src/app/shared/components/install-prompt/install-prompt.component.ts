@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { LucideAngularModule, Download, X, Share, Plus } from 'lucide-angular';
+import { LucideAngularModule, Download, X, Share, Plus, MoreVertical } from 'lucide-angular';
 import { PwaService } from '../../../core/services/pwa.service';
 
 @Component({
@@ -23,8 +23,8 @@ import { PwaService } from '../../../core/services/pwa.service';
               <p class="text-slate-500 dark:text-dark-400 text-sm mt-1">API Breaking Change Detector</p>
             </div>
 
-            <!-- iOS Instructions -->
-            @if (pwaService.isIOS() && !pwaService.hasNativeInstall()) {
+            <!-- iOS Instructions (Safari) -->
+            @if (pwaService.isIOS()) {
               <div class="bg-slate-100 dark:bg-dark-700 rounded-xl p-4 mb-6">
                 <p class="text-slate-700 dark:text-dark-200 text-sm text-center mb-3">
                   Pour installer l'application :
@@ -42,6 +42,30 @@ import { PwaService } from '../../../core/services/pwa.service';
                       <lucide-icon [img]="PlusIcon" class="w-5 h-5 text-primary-600 dark:text-primary-400"></lucide-icon>
                     </div>
                     <span class="text-xs text-slate-500 dark:text-dark-400">2. Ajouter</span>
+                  </div>
+                </div>
+              </div>
+            }
+
+            <!-- Android without native install (Firefox, etc.) -->
+            @if (pwaService.isAndroid() && !pwaService.hasNativeInstall()) {
+              <div class="bg-slate-100 dark:bg-dark-700 rounded-xl p-4 mb-6">
+                <p class="text-slate-700 dark:text-dark-200 text-sm text-center mb-3">
+                  Pour installer l'application :
+                </p>
+                <div class="flex items-center justify-center gap-6">
+                  <div class="flex flex-col items-center">
+                    <div class="w-10 h-10 bg-primary-100 dark:bg-primary-500/20 rounded-full flex items-center justify-center mb-2">
+                      <lucide-icon [img]="MoreVerticalIcon" class="w-5 h-5 text-primary-600 dark:text-primary-400"></lucide-icon>
+                    </div>
+                    <span class="text-xs text-slate-500 dark:text-dark-400">1. Menu ⋮</span>
+                  </div>
+                  <div class="text-slate-300 dark:text-dark-600">→</div>
+                  <div class="flex flex-col items-center">
+                    <div class="w-10 h-10 bg-primary-100 dark:bg-primary-500/20 rounded-full flex items-center justify-center mb-2">
+                      <lucide-icon [img]="DownloadIcon" class="w-5 h-5 text-primary-600 dark:text-primary-400"></lucide-icon>
+                    </div>
+                    <span class="text-xs text-slate-500 dark:text-dark-400">2. Installer</span>
                   </div>
                 </div>
               </div>
@@ -68,7 +92,7 @@ import { PwaService } from '../../../core/services/pwa.service';
         </div>
       </div>
 
-      <!-- Desktop Banner (less intrusive) -->
+      <!-- Desktop Banner -->
       <div class="hidden lg:block fixed bottom-6 right-6 z-50 animate-slide-up">
         <div class="bg-white dark:bg-dark-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-dark-700 p-4 max-w-sm">
           <div class="flex items-center gap-4">
@@ -98,10 +122,10 @@ import { PwaService } from '../../../core/services/pwa.service';
     <!-- iOS Safari Instructions Modal -->
     @if (showIOSInstructions()) {
       <div class="fixed inset-0 z-[60] flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" (click)="closeIOSInstructions()"></div>
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" (click)="closeInstructions()"></div>
         <div class="relative bg-white dark:bg-dark-800 rounded-3xl shadow-2xl p-6 max-w-sm w-full animate-scale-in">
           <button
-            (click)="closeIOSInstructions()"
+            (click)="closeInstructions()"
             class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-dark-200"
           >
             <lucide-icon [img]="CloseIcon" class="w-5 h-5"></lucide-icon>
@@ -148,7 +172,69 @@ import { PwaService } from '../../../core/services/pwa.service';
           </div>
 
           <button
-            (click)="closeIOSInstructions()"
+            (click)="closeInstructions()"
+            class="w-full mt-6 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-semibold transition-colors"
+          >
+            Compris !
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Android Instructions Modal (for browsers without native install) -->
+    @if (showAndroidInstructions()) {
+      <div class="fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" (click)="closeInstructions()"></div>
+        <div class="relative bg-white dark:bg-dark-800 rounded-3xl shadow-2xl p-6 max-w-sm w-full animate-scale-in">
+          <button
+            (click)="closeInstructions()"
+            class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-dark-200"
+          >
+            <lucide-icon [img]="CloseIcon" class="w-5 h-5"></lucide-icon>
+          </button>
+
+          <div class="text-center mb-6">
+            <img src="icons/icon-96x96.png" alt="Changelog Hub" class="w-16 h-16 rounded-2xl shadow-lg mx-auto mb-4">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white">Installation sur Android</h3>
+          </div>
+
+          <div class="space-y-4">
+            <div class="flex items-center gap-4 p-3 bg-slate-50 dark:bg-dark-700 rounded-xl">
+              <div class="w-10 h-10 bg-primary-100 dark:bg-primary-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                <span class="text-lg font-bold text-primary-600 dark:text-primary-400">1</span>
+              </div>
+              <div class="flex-1">
+                <p class="text-slate-700 dark:text-dark-200 text-sm">
+                  Appuyez sur <lucide-icon [img]="MoreVerticalIcon" class="w-4 h-4 inline text-primary-600"></lucide-icon> (menu) en haut à droite
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-4 p-3 bg-slate-50 dark:bg-dark-700 rounded-xl">
+              <div class="w-10 h-10 bg-primary-100 dark:bg-primary-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                <span class="text-lg font-bold text-primary-600 dark:text-primary-400">2</span>
+              </div>
+              <div class="flex-1">
+                <p class="text-slate-700 dark:text-dark-200 text-sm">
+                  Appuyez sur <strong>"Installer l'application"</strong> ou <strong>"Ajouter à l'écran d'accueil"</strong>
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-4 p-3 bg-slate-50 dark:bg-dark-700 rounded-xl">
+              <div class="w-10 h-10 bg-primary-100 dark:bg-primary-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                <span class="text-lg font-bold text-primary-600 dark:text-primary-400">3</span>
+              </div>
+              <div class="flex-1">
+                <p class="text-slate-700 dark:text-dark-200 text-sm">
+                  Confirmez en appuyant sur <strong>"Installer"</strong>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <button
+            (click)="closeInstructions()"
             class="w-full mt-6 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-semibold transition-colors"
           >
             Compris !
@@ -193,16 +279,25 @@ export class InstallPromptComponent {
   CloseIcon = X;
   ShareIcon = Share;
   PlusIcon = Plus;
+  MoreVerticalIcon = MoreVertical;
 
   showIOSInstructions = signal<boolean>(false);
+  showAndroidInstructions = signal<boolean>(false);
 
   async install(): Promise<void> {
-    // Try native install first (Android/Chrome)
+    // Try native install first (Chrome on Android)
     const installed = await this.pwaService.installApp();
 
-    // If no native install available (iOS), show instructions
-    if (!installed && this.pwaService.isIOS()) {
-      this.showIOSInstructions.set(true);
+    if (!installed) {
+      // Show platform-specific instructions
+      if (this.pwaService.isIOS()) {
+        this.showIOSInstructions.set(true);
+      } else if (this.pwaService.isAndroid()) {
+        this.showAndroidInstructions.set(true);
+      } else {
+        // Other mobile browsers - show Android-style instructions
+        this.showAndroidInstructions.set(true);
+      }
     }
   }
 
@@ -210,8 +305,9 @@ export class InstallPromptComponent {
     this.pwaService.dismissPrompt();
   }
 
-  closeIOSInstructions(): void {
+  closeInstructions(): void {
     this.showIOSInstructions.set(false);
+    this.showAndroidInstructions.set(false);
     this.pwaService.dismissPrompt();
   }
 }
