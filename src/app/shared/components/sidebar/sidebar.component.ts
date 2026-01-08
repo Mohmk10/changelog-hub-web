@@ -13,9 +13,7 @@ import { AuthService } from '../../../core/services/auth.service';
       <!-- Logo -->
       <div class="p-6 border-b border-slate-200 dark:border-dark-700">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/25">
-            <lucide-icon [img]="GitCompareIcon" class="w-5 h-5 text-white"></lucide-icon>
-          </div>
+<img src="icons/icon-72x72.png" alt="Changelog Hub" class="w-10 h-10">
           <div>
             <h1 class="font-bold text-slate-900 dark:text-white">Changelog Hub</h1>
             <p class="text-xs text-slate-500 dark:text-dark-400">API Change Detector</p>

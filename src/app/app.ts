@@ -32,7 +32,7 @@ import { ThemeService } from './core/services/theme.service';
     <!-- Mobile Menu Overlay -->
     @if (mobileMenuOpen()) {
       <div
-        class="fixed inset-0 bg-black/50 z-40 lg:hidden"
+        class="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm"
         (click)="toggleMobileMenu()"
       ></div>
     }

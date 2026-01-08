@@ -10,24 +10,16 @@ import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
   imports: [RouterLink, RouterLinkActive, LucideAngularModule, ThemeToggleComponent],
   template: `
     <!-- Top Bar -->
-    <header class="fixed top-0 left-0 right-0 h-16 bg-white dark:bg-dark-800 border-b border-slate-200 dark:border-dark-700 z-50 flex items-center justify-between px-4">
-      <!-- Menu Button -->
-      <button
-        (click)="toggle.emit()"
-        class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-dark-700 transition-colors"
-      >
+    <header class="fixed top-0 left-0 right-0 h-16 bg-white dark:bg-dark-800 border-b border-slate-200 dark:border-dark-700 z-50 flex items-center justify-between px-4" style="padding-top: env(safe-area-inset-top);">
+      <button (click)="toggle.emit()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-dark-700 transition-colors">
         <lucide-icon [img]="isOpen ? CloseIcon : MenuIcon" class="w-6 h-6 text-slate-700 dark:text-dark-200"></lucide-icon>
       </button>
 
-      <!-- Logo -->
       <div class="flex items-center gap-2">
-        <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center">
-          <lucide-icon [img]="GitCompareIcon" class="w-4 h-4 text-white"></lucide-icon>
-        </div>
-        <span class="font-bold text-slate-900 dark:text-white">Changelog Hub</span>
+        <img src="icons/icon-72x72.png" alt="Logo" class="w-8 h-8">
+        <span class="font-bold text-slate-900 dark:text-white text-sm">Changelog Hub</span>
       </div>
 
-      <!-- Theme Toggle -->
       <app-theme-toggle />
     </header>
 
@@ -36,13 +28,12 @@ import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
       class="fixed top-0 left-0 h-full w-72 bg-white dark:bg-dark-800 z-50 transform transition-transform duration-300 ease-in-out"
       [class.translate-x-0]="isOpen"
       [class.-translate-x-full]="!isOpen"
-    >
+      style="padding-top: env(safe-area-inset-top); padding-left: env(safe-area-inset-left);">
+
       <!-- Header -->
       <div class="p-4 border-b border-slate-200 dark:border-dark-700 flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center">
-            <lucide-icon [img]="GitCompareIcon" class="w-5 h-5 text-white"></lucide-icon>
-          </div>
+          <img src="icons/icon-72x72.png" alt="Logo" class="w-10 h-10">
           <div>
             <h1 class="font-bold text-slate-900 dark:text-white">Changelog Hub</h1>
             <p class="text-xs text-slate-500 dark:text-dark-400">API Change Detector</p>
@@ -67,7 +58,7 @@ import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
       }
 
       <!-- Navigation -->
-      <nav class="p-4 space-y-1">
+      <nav class="p-4 space-y-1 overflow-y-auto" style="max-height: calc(100vh - 280px);">
         <a routerLink="/dashboard" routerLinkActive="bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-400"
            (click)="toggle.emit()"
            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-dark-200 hover:bg-slate-100 dark:hover:bg-dark-700 transition-colors">
@@ -101,14 +92,14 @@ import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
       </nav>
 
       <!-- Footer -->
-      <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200 dark:border-dark-700">
+      <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200 dark:border-dark-700" style="padding-bottom: env(safe-area-inset-bottom);">
         @if (authService.isAuthenticated()) {
           <button (click)="logout()" class="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors">
             <lucide-icon [img]="LogOutIcon" class="w-5 h-5"></lucide-icon>
             <span>Logout</span>
           </button>
         } @else {
-          <button (click)="login()" class="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-slate-700 dark:text-dark-200 hover:bg-primary-50 dark:hover:bg-primary-500/10 transition-colors">
+          <button (click)="login()" class="flex items-center gap-3 w-full px-4 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors">
             <lucide-icon [img]="GithubIcon" class="w-5 h-5"></lucide-icon>
             <span>Login with GitHub</span>
           </button>
