@@ -1,0 +1,180 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <!-- Premium dark blue gradient -->
+    <linearGradient id="bgD" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0C1222"/>
+      <stop offset="50%" style="stop-color:#0F172A"/>
+      <stop offset="100%" style="stop-color:#1E293B"/>
+    </linearGradient>
+    
+    <!-- Electric neon gradient -->
+    <linearGradient id="neonD" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#22D3EE"/>
+      <stop offset="40%" style="stop-color:#3B82F6"/>
+      <stop offset="100%" style="stop-color:#A855F7"/>
+    </linearGradient>
+    
+    <!-- Blue core -->
+    <linearGradient id="coreD" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563EB"/>
+      <stop offset="100%" style="stop-color:#4F46E5"/>
+    </linearGradient>
+    
+    <!-- Glass effect -->
+    <linearGradient id="glassD" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:white;stop-opacity:0.15"/>
+      <stop offset="100%" style="stop-color:white;stop-opacity:0"/>
+    </linearGradient>
+    
+    <filter id="glowD" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="softGlowD" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="shadowD" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#3B82F6" flood-opacity="0.4"/>
+    </filter>
+    
+    <clipPath id="hexClipD">
+      <polygon points="256,20 456,135 456,365 256,480 56,365 56,135"/>
+    </clipPath>
+  </defs>
+  
+  <!-- Main hexagon background -->
+  <polygon points="256,20 456,135 456,365 256,480 56,365 56,135" fill="url(#bgD)" filter="url(#shadowD)"/>
+  
+  <!-- Neon border -->
+  <polygon points="256,20 456,135 456,365 256,480 56,365 56,135" fill="none" stroke="url(#neonD)" stroke-width="4" filter="url(#glowD)"/>
+  
+  <!-- Glass overlay -->
+  <ellipse cx="256" cy="160" rx="180" ry="100" fill="url(#glassD)" clip-path="url(#hexClipD)"/>
+  
+  <!-- Inner hexagon rings -->
+  <polygon points="256,55 421,152 421,340 256,437 91,340 91,152" fill="none" stroke="#3B82F6" stroke-width="1" stroke-opacity="0.15"/>
+  <polygon points="256,90 386,169 386,315 256,394 126,315 126,169" fill="none" stroke="#3B82F6" stroke-width="1" stroke-opacity="0.1"/>
+  
+  <!-- Central document stack (3D layered) -->
+  <!-- Shadow layer -->
+  <g transform="translate(168, 145)">
+    <rect width="176" height="210" rx="14" fill="#000" fill-opacity="0.3" transform="translate(12, 12)"/>
+  </g>
+  
+  <!-- Back document -->
+  <g transform="translate(172, 149)">
+    <rect width="176" height="210" rx="14" fill="#1E293B"/>
+  </g>
+  
+  <!-- Middle document -->
+  <g transform="translate(164, 141)">
+    <rect width="176" height="210" rx="14" fill="#334155"/>
+  </g>
+  
+  <!-- Front document (main) -->
+  <g transform="translate(156, 133)">
+    <rect width="200" height="220" rx="16" fill="#F8FAFC"/>
+    
+    <!-- Document header bar -->
+    <rect x="16" y="16" width="80" height="14" rx="7" fill="url(#coreD)"/>
+    <text x="56" y="27" font-family="monospace" font-size="9" fill="white" text-anchor="middle">DIFF</text>
+    
+    <!-- Code lines -->
+    <!-- Normal line -->
+    <rect x="16" y="42" width="140" height="10" rx="5" fill="#CBD5E1"/>
+    
+    <!-- Removed block -->
+    <rect x="12" y="58" width="176" height="28" rx="8" fill="#FEE2E2"/>
+    <rect x="20" y="64" width="8" height="16" rx="2" fill="#EF4444"/>
+    <rect x="34" y="68" width="100" height="8" rx="4" fill="#F87171"/>
+    <circle cx="170" cy="72" r="8" fill="#EF4444"/>
+    <text x="170" y="76" font-family="Arial" font-size="12" font-weight="bold" fill="white" text-anchor="middle">−</text>
+    
+    <!-- Added block -->
+    <rect x="12" y="92" width="176" height="28" rx="8" fill="#DCFCE7"/>
+    <rect x="20" y="98" width="8" height="16" rx="2" fill="#22C55E"/>
+    <rect x="34" y="102" width="120" height="8" rx="4" fill="#4ADE80"/>
+    <circle cx="170" cy="106" r="8" fill="#22C55E"/>
+    <text x="170" y="110" font-family="Arial" font-size="12" font-weight="bold" fill="white" text-anchor="middle">+</text>
+    
+    <!-- Normal line -->
+    <rect x="16" y="128" width="120" height="10" rx="5" fill="#E2E8F0"/>
+    
+    <!-- Another removed -->
+    <rect x="12" y="144" width="176" height="28" rx="8" fill="#FEE2E2"/>
+    <rect x="20" y="150" width="8" height="16" rx="2" fill="#EF4444"/>
+    <rect x="34" y="154" width="80" height="8" rx="4" fill="#F87171"/>
+    <circle cx="170" cy="158" r="8" fill="#EF4444"/>
+    <text x="170" y="162" font-family="Arial" font-size="12" font-weight="bold" fill="white" text-anchor="middle">−</text>
+    
+    <!-- Another added -->
+    <rect x="12" y="178" width="176" height="28" rx="8" fill="#DCFCE7"/>
+    <rect x="20" y="184" width="8" height="16" rx="2" fill="#22C55E"/>
+    <rect x="34" y="188" width="90" height="8" rx="4" fill="#4ADE80"/>
+    <circle cx="170" cy="192" r="8" fill="#22C55E"/>
+    <text x="170" y="196" font-family="Arial" font-size="12" font-weight="bold" fill="white" text-anchor="middle">+</text>
+  </g>
+  
+  <!-- Git branch connections -->
+  <!-- Left branch (old/removed) - curving into document -->
+  <path d="M70 200 Q70 250 100 280 Q130 310 156 280" stroke="#EF4444" stroke-width="5" stroke-linecap="round" fill="none" filter="url(#glowD)"/>
+  
+  <!-- Left node -->
+  <circle cx="70" cy="200" r="20" fill="#EF4444" filter="url(#softGlowD)"/>
+  <text x="70" y="207" font-family="Arial" font-size="22" font-weight="bold" fill="white" text-anchor="middle">−</text>
+  
+  <!-- Right branch (new/added) - curving into document -->
+  <path d="M442 200 Q442 250 412 280 Q382 310 356 280" stroke="#22C55E" stroke-width="5" stroke-linecap="round" fill="none" filter="url(#glowD)"/>
+  
+  <!-- Right node -->
+  <circle cx="442" cy="200" r="20" fill="#22C55E" filter="url(#softGlowD)"/>
+  <text x="442" y="207" font-family="Arial" font-size="22" font-weight="bold" fill="white" text-anchor="middle">+</text>
+  
+  <!-- Top connector (source) -->
+  <path d="M256 60 L256 100 Q256 120 230 140" stroke="url(#coreD)" stroke-width="4" stroke-linecap="round" fill="none" filter="url(#glowD)" stroke-opacity="0.6"/>
+  <path d="M256 100 Q256 120 282 140" stroke="url(#coreD)" stroke-width="4" stroke-linecap="round" fill="none" filter="url(#glowD)" stroke-opacity="0.6"/>
+  
+  <!-- Top node -->
+  <circle cx="256" cy="60" r="16" fill="url(#coreD)" filter="url(#glowD)"/>
+  <circle cx="256" cy="60" r="8" fill="white"/>
+  
+  <!-- Bottom merge -->
+  <path d="M200 353 Q256 390 312 353" stroke="url(#coreD)" stroke-width="4" stroke-linecap="round" fill="none" filter="url(#glowD)" stroke-opacity="0.6"/>
+  <path d="M256 380 L256 420" stroke="url(#coreD)" stroke-width="4" stroke-linecap="round" filter="url(#glowD)"/>
+  
+  <!-- Bottom merge node -->
+  <circle cx="256" cy="420" r="16" fill="url(#coreD)" filter="url(#glowD)"/>
+  <circle cx="256" cy="420" r="8" fill="white"/>
+  
+  <!-- Warning badge -->
+  <g transform="translate(400, 100)">
+    <circle r="24" fill="#F59E0B" filter="url(#softGlowD)"/>
+    <text y="8" font-family="Arial" font-size="28" font-weight="bold" fill="white" text-anchor="middle">!</text>
+  </g>
+  
+  <!-- Stats bar at bottom - 3 elements equally distributed -->
+  <g transform="translate(256, 455)">
+    <rect x="-70" y="-12" width="140" height="24" rx="12" fill="#1E293B" stroke="url(#neonD)" stroke-width="1" stroke-opacity="0.5"/>
+    
+    <!-- Red - Breaking (left) -->
+    <circle cx="-45" cy="0" r="5" fill="#EF4444"/>
+    <text x="-33" y="4" font-family="monospace" font-size="10" fill="#F87171">2</text>
+    
+    <!-- Orange - Warning (center) -->
+    <circle cx="0" cy="0" r="5" fill="#F59E0B"/>
+    <text x="12" y="4" font-family="monospace" font-size="10" fill="#FCD34D">1</text>
+    
+    <!-- Green - Added (right) -->
+    <circle cx="45" cy="0" r="5" fill="#22C55E"/>
+    <text x="57" y="4" font-family="monospace" font-size="10" fill="#4ADE80">2</text>
+  </g>
+</svg>
