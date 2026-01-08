@@ -9,11 +9,28 @@ export class PwaService {
   canInstall = signal<boolean>(false);
   isInstalled = signal<boolean>(false);
   dismissed = signal<boolean>(false);
+  isIOS = signal<boolean>(false);
+  isMobile = signal<boolean>(false);
 
   constructor() {
+    this.detectDevice();
     this.checkIfInstalled();
     this.listenForInstallPrompt();
     this.listenForAppInstalled();
+  }
+
+  private detectDevice(): void {
+    const userAgent = window.navigator.userAgent.toLowerCase();
+
+    // Detect iOS
+    const isIOS = /iphone|ipad|ipod/.test(userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    this.isIOS.set(isIOS);
+
+    // Detect mobile/tablet
+    const isMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile|tablet/i.test(userAgent) ||
+      window.innerWidth <= 1024;
+    this.isMobile.set(isMobile);
   }
 
   private checkIfInstalled(): void {
@@ -23,13 +40,10 @@ export class PwaService {
 
     this.isInstalled.set(isStandalone);
 
-    // Check if user previously dismissed the prompt
-    const dismissed = localStorage.getItem('pwa-install-dismissed');
-    if (dismissed) {
-      const dismissedDate = new Date(dismissed);
-      const daysSinceDismissed = (Date.now() - dismissedDate.getTime()) / (1000 * 60 * 60 * 24);
-      // Show again after 7 days
-      this.dismissed.set(daysSinceDismissed < 7);
+    // On iOS, if not standalone, we can still show install prompt
+    // On Android, we wait for beforeinstallprompt event
+    if (this.isIOS() && !isStandalone) {
+      this.canInstall.set(true);
     }
   }
 
@@ -50,28 +64,36 @@ export class PwaService {
   }
 
   async installApp(): Promise<boolean> {
-    if (!this.deferredPrompt) {
+    // For Android/Chrome - use native prompt
+    if (this.deferredPrompt) {
+      this.deferredPrompt.prompt();
+      const { outcome } = await this.deferredPrompt.userChoice;
+
+      if (outcome === 'accepted') {
+        this.canInstall.set(false);
+        this.deferredPrompt = null;
+        return true;
+      }
       return false;
     }
 
-    this.deferredPrompt.prompt();
-    const { outcome } = await this.deferredPrompt.userChoice;
-
-    if (outcome === 'accepted') {
-      this.canInstall.set(false);
-      this.deferredPrompt = null;
-      return true;
-    }
-
+    // For iOS - cannot programmatically install, return false
+    // The component will show iOS-specific instructions
     return false;
   }
 
   dismissPrompt(): void {
     this.dismissed.set(true);
-    localStorage.setItem('pwa-install-dismissed', new Date().toISOString());
+    // Only dismiss for this session - will show again on next visit
+    // No localStorage persistence = shows every time
   }
 
   shouldShowPrompt(): boolean {
-    return this.canInstall() && !this.isInstalled() && !this.dismissed();
+    // Show on mobile devices if not installed and not dismissed in current session
+    return this.isMobile() && this.canInstall() && !this.isInstalled() && !this.dismissed();
+  }
+
+  hasNativeInstall(): boolean {
+    return this.deferredPrompt !== null;
   }
 }
